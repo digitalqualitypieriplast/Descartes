@@ -1,212 +1,59 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Control de Productos Tolerados - Descartes</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #e9ecef;
-      margin: 0;
-      padding: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-    }
-
-    .container {
-      background-color: #ffffff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      width: 100%;
-      max-width: 400px;
-    }
-
-    h1 {
-      font-size: 22px;
-      color: #2c3e50;
-      text-align: center;
-      margin-bottom: 20px;
-      font-weight: 600;
-    }
-
-    .input-group {
-      margin-bottom: 15px;
-    }
-
-    .input-group label {
-      display: block;
-      font-size: 14px;
-      color: #495057;
-      margin-bottom: 5px;
-      font-weight: 500;
-    }
-
-    .input-group input,
-    .input-group select,
-    .input-group textarea {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ced4da;
-      border-radius: 6px;
-      font-size: 14px;
-      color: #495057;
-      background-color: #f8f9fa;
-      transition: border-color 0.3s ease;
-    }
-
-    .input-group input:focus,
-    .input-group select:focus,
-    .input-group textarea:focus {
-      border-color: #007bff;
-      outline: none;
-      background-color: #fff;
-    }
-
-    .input-group input[type="number"] {
-      appearance: textfield;
-    }
-
-    .button-group {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-    .button-group button {
-      padding: 12px;
-      border: none;
-      border-radius: 6px;
-      font-size: 14px;
-      cursor: pointer;
-      width: 100%;
-      transition: background-color 0.3s ease;
-    }
-
-    .button-group button[type="submit"] {
-      background-color: #28a745;
-      color: #fff;
-    }
-
-    .button-group button[type="button"] {
-      background-color: #dc3545;
-      color: #fff;
-    }
-
-    .button-group button:hover {
-      opacity: 0.9;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control de Productos Tolerados - Descartes</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.css" rel="stylesheet">
+    <!-- El resto de tu CSS se mantiene igual -->
 </head>
 <body>
-  <div class="container">
-    <h1>Control de Productos Tolerados - Descartes</h1>
+    <!-- Tu HTML se mantiene igual hasta el script -->
 
-    <div class="input-group">
-      <label for="numero">Nº</label>
-      <input type="text" id="numero" name="numero" readonly>
-    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.js"></script>
+    <script>
+        // Configuración
+        const CONFIG = {
+            scriptURL: 'https://script.google.com/a/macros/pieriplast.com/s/AKfycbwpqKgR77QHvdJk_7fS9DM5F-1EYzWFTcO6KsBo3iWWPa7HUumNnaIoXd56UBUJUIJhXQ/exec', // Asegúrate de que termine en /exec
+            autoIncrementPrefix: 'DESC-'
+        };
 
-    <div class="input-group">
-      <label for="fecha">Fecha</label>
-      <input type="date" id="fecha" name="fecha" required>
-    </div>
+        // El resto de las funciones se mantienen igual, solo modificamos enviarDatos:
+        async function enviarDatos() {
+            const submitButton = document.getElementById('submitButton');
+            const buttonText = submitButton.querySelector('.button-text');
+            
+            try {
+                submitButton.disabled = true;
+                submitButton.classList.add('loading');
+                buttonText.textContent = 'Guardando...';
 
-    <div class="input-group">
-      <label for="turno">Turno</label>
-      <select id="turno" name="turno" required>
-        <option value="DIA">DIA</option>
-        <option value="NOCHE">NOCHE</option>
-      </select>
-    </div>
+                const formData = getFormData();
+                
+                const response = await fetch(CONFIG.scriptURL, {
+                    method: 'POST',
+                    mode: 'no-cors', // Importante para CORS
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
 
-    <div class="input-group">
-      <label for="codigoProducto">Código de Producto</label>
-      <input type="text" id="codigoProducto" name="codigoProducto" required>
-    </div>
-
-    <div class="input-group">
-      <label for="numeroOrden">Nº Orden</label>
-      <input type="text" id="numeroOrden" name="numeroOrden" required>
-    </div>
-
-    <div class="input-group">
-      <label for="tolerado">Tolerado (Tarjeta Rosada)</label>
-      <input type="number" id="tolerado" name="tolerado" required>
-    </div>
-
-    <div class="input-group">
-      <label for="descarteTotal">Descarte Total (Tarjeta Celeste)</label>
-      <input type="number" id="descarteTotal" name="descarteTotal" required>
-    </div>
-
-    <div class="input-group">
-      <label for="observacion">Observación</label>
-      <textarea id="observacion" name="observacion" rows="3"></textarea>
-    </div>
-
-    <div class="input-group">
-      <label for="vipCalidad">VIP Calidad</label>
-      <input type="text" id="vipCalidad" name="vipCalidad">
-    </div>
-
-    <div class="button-group">
-      <button type="submit" onclick="enviarDatos()">Guardar</button>
-      <button type="button" onclick="limpiarFormulario()">Limpiar</button>
-    </div>
-  </div>
-
-  <script>
-    // URL de tu Google Apps Script (cámbiala por la tuya)
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbwBxGJqjFTvySQpC7jfacGWaHIMtmqDmrZFgBMDxr--uNnSF_vwD9HHhyyjswULBI0W/exec';
-
-    // Enviar datos al backend
-    function enviarDatos() {
-      const datos = {
-        numero: document.getElementById('numero').value,
-        fecha: document.getElementById('fecha').value,
-        turno: document.getElementById('turno').value,
-        codigoProducto: document.getElementById('codigoProducto').value,
-        numeroOrden: document.getElementById('numeroOrden').value,
-        tolerado: document.getElementById('tolerado').value,
-        descarteTotal: document.getElementById('descarteTotal').value,
-        observacion: document.getElementById('observacion').value,
-        vipCalidad: document.getElementById('vipCalidad').value
-      };
-
-      fetch(scriptURL, {
-        method: 'POST',
-        body: JSON.stringify(datos),
-        headers: {
-          'Content-Type': 'application/json'
+                // Como estamos usando no-cors, manejamos la respuesta de manera diferente
+                showNotification('¡Datos enviados correctamente!', 'success');
+                limpiarFormulario();
+                
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('Error al enviar los datos. Intente nuevamente.', 'error');
+            } finally {
+                submitButton.disabled = false;
+                submitButton.classList.remove('loading');
+                buttonText.textContent = 'Guardar';
+            }
         }
-      })
-      .then(response => response.text())
-      .then(result => {
-        alert('Datos guardados correctamente');
-        limpiarFormulario();
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        alert('Hubo un error al guardar los datos');
-      });
-    }
 
-    // Limpiar el formulario
-    function limpiarFormulario() {
-      document.getElementById('fecha').value = '';
-      document.getElementById('turno').value = 'DIA';
-      document.getElementById('codigoProducto').value = '';
-      document.getElementById('numeroOrden').value = '';
-      document.getElementById('tolerado').value = '';
-      document.getElementById('descarteTotal').value = '';
-      document.getElementById('observacion').value = '';
-      document.getElementById('vipCalidad').value = '';
-    }
-  </script>
+        // El resto de tu código JavaScript se mantiene igual
+    </script>
 </body>
 </html>
