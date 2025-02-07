@@ -6,7 +6,7 @@
     <title>Control de Productos Tolerados - Descartes</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.css">
     <style>
-        /* Previous CSS styles remain unchanged */
+        /* Aquí puedes agregar estilos si es necesario */
     </style>
 </head>
 <body>
@@ -80,14 +80,44 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.js"></script>
     <script>
-        // Update the configuration
         const CONFIG = {
-            scriptURL: 'https://script.google.com/macros/s/AKfycbw5qj2J95sKRmc0yakA8GJHUg1uH0LxHGohgHskPznEot-9B7Qt7P3fnLgekBTcPTa-mw/exec',
+            scriptURL: 'https://script.google.com/macros/s/AKfycbxf8ELjSIXKq3KwqO-3n0xR-5-15SpzQRgRPmD_HGE0yDj4XC-R9gUdadnHbLZb6s20Jw/exec',
             autoIncrementPrefix: 'DESC-',
             currentNumber: 1
         };
 
-        // Rest of the JavaScript remains the same, but update getFormData() function
+        document.getElementById("productoForm").addEventListener("submit", function (event) {
+            event.preventDefault(); // Evita el envío tradicional del formulario
+
+            const formData = getFormData(); // Obtiene los datos del formulario
+
+            fetch(CONFIG.scriptURL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json()) // Convierte la respuesta a JSON
+            .then(result => {
+                console.log("Éxito:", result);
+                Toastify({ 
+                    text: "Datos guardados con éxito", 
+                    duration: 3000, 
+                    gravity: "top", 
+                    backgroundColor: "#4CAF50" 
+                }).showToast();
+                limpiarFormulario(); // Limpia el formulario tras el envío
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                Toastify({ 
+                    text: "Error al enviar los datos", 
+                    duration: 3000, 
+                    gravity: "top", 
+                    backgroundColor: "#FF0000" 
+                }).showToast();
+            });
+        });
+
         function getFormData() {
             return {
                 numero: document.getElementById('numero').value,
@@ -102,7 +132,9 @@
             };
         }
 
-        // Previous script remains unchanged
+        function limpiarFormulario() {
+            document.getElementById("productoForm").reset();
+        }
     </script>
 </body>
 </html>
