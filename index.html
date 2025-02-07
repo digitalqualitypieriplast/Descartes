@@ -230,7 +230,7 @@
     <script>
         // Configuración
         const CONFIG = {
-            scriptURL: 'https://script.google.com/macros/s/AKfycbx6rX0mRwgav45TdgEpyNZMlx1pN6dn9cGZEQOcZU6VHPsBkArRhRmRvT1I5uPerXeJQw/exec',
+            scriptURL: 'https://script.google.com/macros/s/AKfycbzYvl5HePOMwDGtbbEXEwWUEN6KSbgRD3QEt5F2-aAk-klwOU0_rDDCQcbTVejgyUXVqw/exec',
             autoIncrementPrefix: 'DESC-',
             currentNumber: 1
         };
@@ -306,45 +306,44 @@
 
         // Enviar datos al backend
         async function enviarDatos() {
-    const submitButton = document.getElementById('submitButton');
-    const buttonText = submitButton.querySelector('.button-text');
-    
-    try {
-        // Deshabilitar botón y mostrar loading
-        submitButton.disabled = true;
-        submitButton.classList.add('loading');
-        buttonText.textContent = 'Guardando...';
+            const submitButton = document.getElementById('submitButton');
+            const buttonText = submitButton.querySelector('.button-text');
+            
+            try {
+                submitButton.disabled = true;
+                submitButton.classList.add('loading');
+                buttonText.textContent = 'Guardando...';
 
-        const formData = getFormData();
-        
-        console.log('Enviando datos:', formData); // Para debugging
+                const formData = getFormData();
+                
+                const response = await fetch(CONFIG.scriptURL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
 
-        const response = await fetch(CONFIG.scriptURL, {
-            method: 'POST',
-            mode: 'no-cors', // Importante para CORS
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData)
-        });
+                const result = await response.json();
+                
+                if (result.success) {
+                    showNotification('¡Datos enviados correctamente!', 'success');
+                    CONFIG.currentNumber++;
+                    updateNumeroField();
+                    limpiarFormulario();
+                } else {
+                    throw new Error(result.message);
+                }
 
-        console.log('Respuesta recibida'); // Para debugging
-        
-        showNotification('¡Datos enviados correctamente!', 'success');
-        CONFIG.currentNumber++;
-        updateNumeroField();
-        limpiarFormulario();
-
-    } catch (error) {
-        console.error('Error al enviar datos:', error);
-        showNotification('Error al enviar los datos. Por favor, intente nuevamente.', 'error');
-    } finally {
-        submitButton.disabled = false;
-        submitButton.classList.remove('loading');
-        buttonText.textContent = 'Guardar';
-    }
-}
+            } catch (error) {
+                console.error('Error al enviar datos:', error);
+                showNotification('Error al enviar los datos. Por favor, intente nuevamente.', 'error');
+            } finally {
+                submitButton.disabled = false;
+                submitButton.classList.remove('loading');
+                buttonText.textContent = 'Guardar';
+            }
+        }
 
         // Obtener datos del formulario
         function getFormData() {
