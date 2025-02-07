@@ -1,84 +1,191 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de Envío</title>
+    <title>Control de Productos Tolerados - Descartes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.css">
     <style>
+        /* Estilos básicos */
         body {
             font-family: Arial, sans-serif;
-            margin: 50px;
-            text-align: center;
-        }
-        form {
-            max-width: 400px;
-            margin: auto;
-            background: #f9f9f9;
+            margin: 20px;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            background-color: #f4f4f4;
         }
-        input, button {
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+        }
+        input, select, textarea {
             width: 100%;
-            padding: 10px;
-            margin: 10px 0;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
             border-radius: 5px;
-            border: 1px solid #ddd;
+        }
+        .button-group {
+            display: flex;
+            justify-content: space-between;
         }
         button {
-            background: #28a745;
+            background-color: #28a745;
             color: white;
-            font-size: 16px;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
             cursor: pointer;
         }
         button:hover {
-            background: #218838;
+            background-color: #218838;
+        }
+        .error-message {
+            color: red;
+            font-size: 12px;
+            display: none;
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <h1>Control de Productos Tolerados - Descartes</h1>
+        <form id="productoForm" novalidate>
+            <div class="input-group">
+                <label for="numero">ID</label>
+                <input type="text" id="numero" name="numero" readonly>
+            </div>
 
-    <h2>Formulario de Registro</h2>
+            <div class="input-group">
+                <label for="fecha">Fecha</label>
+                <input type="date" id="fecha" name="fecha" required>
+                <div class="error-message">La fecha es requerida</div>
+            </div>
 
-    <form id="miFormulario">
-        <label for="nombre">Nombre:</label>
-        <input type="text" id="nombre" name="nombre" required>
+            <div class="input-group">
+                <label for="turno">Turno</label>
+                <select id="turno" name="turno" required>
+                    <option value="">Seleccione un turno</option>
+                    <option value="DIA">DIA</option>
+                    <option value="NOCHE">NOCHE</option>
+                </select>
+                <div class="error-message">Debe seleccionar un turno</div>
+            </div>
 
-        <label for="correo">Correo:</label>
-        <input type="email" id="correo" name="correo" required>
+            <div class="input-group">
+                <label for="codigoProducto">Código de Producto</label>
+                <input type="text" id="codigoProducto" name="codigoProducto" required>
+                <div class="error-message">El código de producto es requerido</div>
+            </div>
 
-        <button type="submit">Enviar</button>
-    </form>
+            <div class="input-group">
+                <label for="numeroOrden">Nº Orden</label>
+                <input type="text" id="numeroOrden" name="numeroOrden" required>
+                <div class="error-message">El número de orden es requerido</div>
+            </div>
 
+            <div class="input-group">
+                <label for="tolerado">Tolerado</label>
+                <input type="number" id="tolerado" name="tolerado" required min="0">
+                <div class="error-message">Ingrese un valor válido</div>
+            </div>
+
+            <div class="input-group">
+                <label for="descarteTotal">Descarte Total</label>
+                <input type="number" id="descarteTotal" name="descarteTotal" required min="0">
+                <div class="error-message">Ingrese un valor válido</div>
+            </div>
+
+            <div class="input-group">
+                <label for="observacion">Observación</label>
+                <textarea id="observacion" name="observacion" rows="3"></textarea>
+            </div>
+
+            <div class="input-group">
+                <label for="vistoBueno">Visto Bueno</label>
+                <input type="text" id="vistoBueno" name="vistoBueno">
+            </div>
+
+            <div class="button-group">
+                <button type="submit" id="submitButton">
+                    Guardar
+                </button>
+                <button type="button" onclick="limpiarFormulario()">Limpiar</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.js"></script>
     <script>
-        document.getElementById("miFormulario").addEventListener("submit", function(event) {
+        // Configuración de la URL de Google Apps Script
+        const CONFIG = {
+            scriptURL: 'https://script.google.com/macros/s/AKfycbw0VPE279hMGmb-HqX7VIeiIGOl8YHLPzX5XVS-jjyOIybEnnsKutfdYlLH087IWOpxJg/exec'
+        };
+
+        // Capturar datos del formulario
+        function getFormData() {
+            return {
+                numero: document.getElementById('numero').value,
+                fecha: document.getElementById('fecha').value,
+                turno: document.getElementById('turno').value,
+                codigoProducto: document.getElementById('codigoProducto').value,
+                numeroOrden: document.getElementById('numeroOrden').value,
+                tolerado: document.getElementById('tolerado').value,
+                descarteTotal: document.getElementById('descarteTotal').value,
+                observacion: document.getElementById('observacion').value,
+                vistoBueno: document.getElementById('vistoBueno').value
+            };
+        }
+
+        // Enviar datos a Google Sheets a través de Google Apps Script
+        document.getElementById("productoForm").addEventListener("submit", function(event) {
             event.preventDefault(); // Evita el envío tradicional del formulario
 
-            // Captura los datos del formulario
-            let formData = {
-                nombre: document.getElementById("nombre").value,
-                correo: document.getElementById("correo").value
-            };
+            let formData = getFormData();
 
-            // Enviar datos a la API de Google Apps Script
-            fetch('https://script.google.com/macros/s/AKfycbw0VPE279hMGmb-HqX7VIeiIGOl8YHLPzX5XVS-jjyOIybEnnsKutfdYlLH087IWOpxJg/exec', { 
-                method: 'POST',
+            fetch(CONFIG.scriptURL, {
+                method: "POST",
                 headers: {
-                    'Content-Type': 'application/json'
+                    "Content-Type": "application/json"
                 },
                 body: JSON.stringify(formData)
             })
-            .then(response => response.json()) 
+            .then(response => response.json())
             .then(data => {
                 console.log("Respuesta de la API:", data);
-                alert("Datos enviados correctamente");
+                Toastify({
+                    text: "Datos enviados correctamente",
+                    duration: 3000,
+                    gravity: "top",
+                    backgroundColor: "green"
+                }).showToast();
+                limpiarFormulario();
             })
             .catch(error => {
                 console.error("Error:", error);
-                alert("Hubo un error al enviar los datos");
+                Toastify({
+                    text: "Error al enviar los datos",
+                    duration: 3000,
+                    gravity: "top",
+                    backgroundColor: "red"
+                }).showToast();
             });
         });
-    </script>
 
+        // Función para limpiar el formulario
+        function limpiarFormulario() {
+            document.getElementById("productoForm").reset();
+        }
+    </script>
 </body>
 </html>
