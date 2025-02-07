@@ -305,25 +305,34 @@
         }
 
         // Enviar datos al backend
-        async function enviarDatos() {
-            const submitButton = document.getElementById('submitButton');
-            const buttonText = submitButton.querySelector('.button-text');
-            
-            try {
-                submitButton.disabled = true;
-                submitButton.classList.add('loading');
-                buttonText.textContent = 'Guardando...';
+       async function enviarDatos() {
+    try {
+        const formData = getFormData();
+        
+        const response = await fetch(CONFIG.scriptURL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        });
 
-                const formData = getFormData();
-                
-                const response = await fetch(CONFIG.scriptURL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formData)
-                });
+        const result = await response.json();
+        
+        if (result.success) {
+            showNotification('¡Datos enviados correctamente!', 'success');
+            CONFIG.currentNumber++;
+            updateNumeroField();
+            limpiarFormulario();
+        } else {
+            throw new Error(result.message);
+        }
 
+    } catch (error) {
+        console.error('Error al enviar datos:', error);
+        showNotification('Error al enviar los datos. Por favor, intente nuevamente.', 'error');
+    }
+}
                 const result = await response.json();
                 
                 if (result.success) {
