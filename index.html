@@ -3,70 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Control de Productos Tolerados - Descartes</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.css">
+    <title>Registro de Descartes</title>
 </head>
 <body>
-    <div class="container">
-        <h1>Control de Productos Tolerados - Descartes</h1>
-        
-        <!-- Formulario con acción directa a Google Apps Script -->
-        <form id="productoForm" action="https://script.google.com/macros/s/AKfycby6o-_ulGjBtnGwkCHpL_FoobmtU5lyGN3xz_WVAuavv6z7gm10xwE14fZve_WZcNimpw/exec" method="POST">
-            <div class="input-group">
-                <label for="numero">ID</label>
-                <input type="text" id="numero" name="numero" readonly>
-            </div>
+    <h2>Formulario de Registro</h2>
+    <form id="productoForm">
+        <label for="numero">Número:</label>
+        <input type="text" id="numero" name="numero" required><br>
 
-            <div class="input-group">
-                <label for="fecha">Fecha</label>
-                <input type="date" id="fecha" name="fecha" required>
-            </div>
+        <label for="fecha">Fecha:</label>
+        <input type="date" id="fecha" name="fecha" required><br>
 
-            <div class="input-group">
-                <label for="turno">Turno</label>
-                <select id="turno" name="turno" required>
-                    <option value="">Seleccione un turno</option>
-                    <option value="DIA">DIA</option>
-                    <option value="NOCHE">NOCHE</option>
-                </select>
-            </div>
+        <label for="turno">Turno:</label>
+        <input type="text" id="turno" name="turno" required><br>
 
-            <div class="input-group">
-                <label for="codigoProducto">Código de Producto</label>
-                <input type="text" id="codigoProducto" name="codigoProducto" required>
-            </div>
+        <label for="codigoProducto">Código de Producto:</label>
+        <input type="text" id="codigoProducto" name="codigoProducto" required><br>
 
-            <div class="input-group">
-                <label for="numeroOrden">Nº Orden</label>
-                <input type="text" id="numeroOrden" name="numeroOrden" required>
-            </div>
+        <label for="numeroOrden">Número de Orden:</label>
+        <input type="text" id="numeroOrden" name="numeroOrden" required><br>
 
-            <div class="input-group">
-                <label for="tolerado">Tolerado</label>
-                <input type="number" id="tolerado" name="tolerado" required min="0">
-            </div>
+        <label for="tolerado">Tolerado:</label>
+        <input type="number" id="tolerado" name="tolerado" required><br>
 
-            <div class="input-group">
-                <label for="descarteTotal">Descarte Total</label>
-                <input type="number" id="descarteTotal" name="descarteTotal" required min="0">
-            </div>
+        <label for="descarteTotal">Descarte Total:</label>
+        <input type="number" id="descarteTotal" name="descarteTotal" required><br>
 
-            <div class="input-group">
-                <label for="observacion">Observación</label>
-                <textarea id="observacion" name="observacion" rows="3"></textarea>
-            </div>
+        <label for="observacion">Observación:</label>
+        <input type="text" id="observacion" name="observacion"><br>
 
-            <div class="input-group">
-                <label for="vistoBueno">Visto Bueno</label>
-                <input type="text" id="vistoBueno" name="vistoBueno">
-            </div>
+        <label for="vistoBueno">Visto Bueno:</label>
+        <input type="text" id="vistoBueno" name="vistoBueno"><br>
 
-            <div class="button-group">
-                <button type="submit">Guardar</button>
-                <button type="reset">Limpiar</button>
-            </div>
-        </form>
-    </div>
+        <button type="submit">Enviar</button>
+    </form>
 
+    <script>
+        document.getElementById('productoForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const formData = {
+                numero: document.getElementById('numero').value,
+                fecha: document.getElementById('fecha').value,
+                turno: document.getElementById('turno').value,
+                codigoProducto: document.getElementById('codigoProducto').value,
+                numeroOrden: document.getElementById('numeroOrden').value,
+                tolerado: document.getElementById('tolerado').value,
+                descarteTotal: document.getElementById('descarteTotal').value,
+                observacion: document.getElementById('observacion').value,
+                vistoBueno: document.getElementById('vistoBueno').value
+            };
+
+            fetch("https://script.google.com/macros/s/AKfycbx2xvZtSgg7UGX4R8qi1PSzg7eJOqkLXF_tHeC0FN9U8_MruFFAi6DkLT0hXszfrZshMg/exec", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Éxito:", data);
+                alert("Datos enviados correctamente.");
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Hubo un problema al enviar los datos.");
+            });
+        });
+    </script>
 </body>
 </html>
