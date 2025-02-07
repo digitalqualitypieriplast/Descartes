@@ -1,66 +1,17 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Control de Productos Tolerados - Descartes</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.css">
-    <style>
-        /* Estilos básicos */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }
-        .container {
-            max-width: 500px;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
-        }
-        .input-group {
-            margin-bottom: 15px;
-        }
-        label {
-            font-weight: bold;
-            display: block;
-        }
-        input, select, textarea {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .button-group {
-            display: flex;
-            justify-content: space-between;
-        }
-        button {
-            background-color: #28a745;
-            color: white;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-        .error-message {
-            color: red;
-            font-size: 12px;
-            display: none;
-        }
-    </style>
 </head>
 <body>
     <div class="container">
         <h1>Control de Productos Tolerados - Descartes</h1>
-        <form id="productoForm" novalidate>
+        
+        <!-- Formulario con acción directa a Google Apps Script -->
+        <form id="productoForm" action="https://script.google.com/macros/s/AKfycbw0VPE279hMGmb-HqX7VIeiIGOl8YHLPzX5XVS-jjyOIybEnnsKutfdYlLH087IWOpxJg/exec" method="POST">
             <div class="input-group">
                 <label for="numero">ID</label>
                 <input type="text" id="numero" name="numero" readonly>
@@ -69,7 +20,6 @@
             <div class="input-group">
                 <label for="fecha">Fecha</label>
                 <input type="date" id="fecha" name="fecha" required>
-                <div class="error-message">La fecha es requerida</div>
             </div>
 
             <div class="input-group">
@@ -79,31 +29,26 @@
                     <option value="DIA">DIA</option>
                     <option value="NOCHE">NOCHE</option>
                 </select>
-                <div class="error-message">Debe seleccionar un turno</div>
             </div>
 
             <div class="input-group">
                 <label for="codigoProducto">Código de Producto</label>
                 <input type="text" id="codigoProducto" name="codigoProducto" required>
-                <div class="error-message">El código de producto es requerido</div>
             </div>
 
             <div class="input-group">
                 <label for="numeroOrden">Nº Orden</label>
                 <input type="text" id="numeroOrden" name="numeroOrden" required>
-                <div class="error-message">El número de orden es requerido</div>
             </div>
 
             <div class="input-group">
                 <label for="tolerado">Tolerado</label>
                 <input type="number" id="tolerado" name="tolerado" required min="0">
-                <div class="error-message">Ingrese un valor válido</div>
             </div>
 
             <div class="input-group">
                 <label for="descarteTotal">Descarte Total</label>
                 <input type="number" id="descarteTotal" name="descarteTotal" required min="0">
-                <div class="error-message">Ingrese un valor válido</div>
             </div>
 
             <div class="input-group">
@@ -117,75 +62,11 @@
             </div>
 
             <div class="button-group">
-                <button type="submit" id="submitButton">
-                    Guardar
-                </button>
-                <button type="button" onclick="limpiarFormulario()">Limpiar</button>
+                <button type="submit">Guardar</button>
+                <button type="reset">Limpiar</button>
             </div>
         </form>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.js"></script>
-    <script>
-        // Configuración de la URL de Google Apps Script
-        const CONFIG = {
-            scriptURL: 'https://script.google.com/macros/s/AKfycbw0VPE279hMGmb-HqX7VIeiIGOl8YHLPzX5XVS-jjyOIybEnnsKutfdYlLH087IWOpxJg/exec'
-        };
-
-        // Capturar datos del formulario
-        function getFormData() {
-            return {
-                numero: document.getElementById('numero').value,
-                fecha: document.getElementById('fecha').value,
-                turno: document.getElementById('turno').value,
-                codigoProducto: document.getElementById('codigoProducto').value,
-                numeroOrden: document.getElementById('numeroOrden').value,
-                tolerado: document.getElementById('tolerado').value,
-                descarteTotal: document.getElementById('descarteTotal').value,
-                observacion: document.getElementById('observacion').value,
-                vistoBueno: document.getElementById('vistoBueno').value
-            };
-        }
-
-        // Enviar datos a Google Sheets a través de Google Apps Script
-        document.getElementById("productoForm").addEventListener("submit", function(event) {
-            event.preventDefault(); // Evita el envío tradicional del formulario
-
-            let formData = getFormData();
-
-            fetch(CONFIG.scriptURL, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(formData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log("Respuesta de la API:", data);
-                Toastify({
-                    text: "Datos enviados correctamente",
-                    duration: 3000,
-                    gravity: "top",
-                    backgroundColor: "green"
-                }).showToast();
-                limpiarFormulario();
-            })
-            .catch(error => {
-                console.error("Error:", error);
-                Toastify({
-                    text: "Error al enviar los datos",
-                    duration: 3000,
-                    gravity: "top",
-                    backgroundColor: "red"
-                }).showToast();
-            });
-        });
-
-        // Función para limpiar el formulario
-        function limpiarFormulario() {
-            document.getElementById("productoForm").reset();
-        }
-    </script>
 </body>
 </html>
