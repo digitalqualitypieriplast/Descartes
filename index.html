@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Control de Productos Tolerados</title>
+    <title>Control de productos tolerados</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.css" rel="stylesheet">
     <style>
         :root {
@@ -14,7 +14,7 @@
             --border-radius: 12px;
             --input-bg: #f9fafb;
         }
-        
+
         * {
             margin: 0;
             padding: 0;
@@ -34,8 +34,7 @@
             margin: 0 auto;
             background: white;
             border-radius: var(--border-radius);
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 
-                       0 2px 4px -1px rgba(0,0,0,0.06);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
             overflow: hidden;
         }
 
@@ -159,27 +158,22 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Responsive adjustments */
         @media (max-width: 640px) {
             .container {
                 margin: 0;
                 border-radius: 0;
             }
-
             .form-grid {
                 grid-template-columns: 1fr;
             }
-
             .header {
                 padding: 1.5rem;
             }
-
             .form-container {
                 padding: 1.5rem;
             }
         }
 
-        /* Custom select styling */
         select {
             appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
@@ -189,7 +183,6 @@
             padding-right: 2.5rem;
         }
 
-        /* Number input styling */
         input[type="number"] {
             -moz-appearance: textfield;
         }
@@ -200,7 +193,6 @@
             margin: 0;
         }
 
-        /* Floating label effect */
         .floating-label {
             position: relative;
             padding-top: 0.5rem;
@@ -227,86 +219,59 @@
 <body>
     <div class="container">
         <div class="header">
-            <h2>Control de Productos Tolerados</h2>
+            <h2>Control de productos tolerados</h2>
             <p>Descartes de P&M</p>
         </div>
-        
         <div class="form-container">
             <form id="productoForm">
                 <div class="form-grid">
                     <div class="form-group">
-                        <label for="fecha">Fecha de Registro</label>
+                        <label for="fecha">Fecha de registro</label>
                         <input type="date" id="fecha" name="fecha" required>
                         <div class="error" id="fecha-error"></div>
                     </div>
-
                     <div class="form-group">
-                        <label for="turno">Turno de Producción</label>
+                        <label for="turno">Turno de producción</label>
                         <select id="turno" name="turno" required>
-                            <option value="">Seleccione turno</option>
+                            <option value="">Selección de turno</option>
                             <option value="DIA">DÍA</option>
                             <option value="NOCHE">NOCHE</option>
                         </select>
                         <div class="error" id="turno-error"></div>
                     </div>
-
-                    <div class="form-group">
-                        <label for="codigoProducto">Código de Producto</label>
-                        <input type="text" id="codigoProducto" name="codigoProducto" 
-                               required pattern="[A-Za-z0-9-]+" 
-                               title="Solo letras, números y guiones"
-                               placeholder="Ej: PROD-001">
-                        <div class="error" id="codigoProducto-error"></div>
-                    </div>
-
+                    <!-- Eliminado el campo "Código de Producto" -->
                     <div class="form-group">
                         <label for="numeroOrden">Número de Orden</label>
-                        <input type="text" id="numeroOrden" name="numeroOrden" 
-                               required pattern="[A-Za-z0-9-]+" 
-                               placeholder="Ej: ORD-2024-001">
+                        <input type="text" id="numeroOrden" name="numeroOrden" required pattern="[A-Za-z0-9-]+" placeholder="Ej: ORD-2024-001">
                         <div class="error" id="numeroOrden-error"></div>
                     </div>
-
                     <div class="form-group">
                         <label for="tolerado">Tolerado</label>
-                        <input type="number" id="tolerado" name="tolerado" 
-                               required min="0" step="0.01" 
-                               placeholder="0.00">
+                        <input type="number" id="tolerado" name="tolerado" required min="0" step="0.01" placeholder="0.00">
                         <div class="error" id="tolerado-error"></div>
                     </div>
-
                     <div class="form-group">
                         <label for="descarteTotal">Descarte Total</label>
-                        <input type="number" id="descarteTotal" name="descarteTotal" 
-                               required min="0" step="0.01" 
-                               placeholder="0.00">
+                        <input type="number" id="descarteTotal" name="descarteTotal" required min="0" step="0.01" placeholder="0.00">
                         <div class="error" id="descarteTotal-error"></div>
                     </div>
                 </div>
-
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="observacion">Observaciones</label>
-                        <input type="text" id="observacion" name="observacion" 
-                               placeholder="Ingrese observaciones adicionales">
+                        <input type="text" id="observacion" name="observacion" placeholder="Ingrese observaciones adicionales">
                     </div>
-
                     <div class="form-group">
                         <label for="vistoBueno">Visto Bueno</label>
-                        <input type="text" id="vistoBueno" name="vistoBueno" 
-                               placeholder="Nombre del Coordinador">
+                        <input type="text" id="vistoBueno" name="vistoBueno" placeholder="Nombre del Coordinador">
                     </div>
                 </div>
-
                 <div class="form-actions">
-                    <button type="submit">
-                        Registrar Descarte
-                    </button>
+                    <button type="submit">Registrar Descarte</button>
                 </div>
             </form>
         </div>
     </div>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.js"></script>
     <script>
         function showToast(message, isError = false) {
@@ -326,12 +291,10 @@
 
         function validateForm() {
             let isValid = true;
-            const fields = ['fecha', 'turno', 'codigoProducto', 'numeroOrden', 'tolerado', 'descarteTotal'];
-            
+            const fields = ['fecha', 'turno', 'numeroOrden', 'tolerado', 'descarteTotal'];
             fields.forEach(field => {
                 const element = document.getElementById(field);
                 const errorElement = document.getElementById(`${field}-error`);
-                
                 if (!element.value) {
                     errorElement.textContent = 'Este campo es obligatorio';
                     element.style.borderColor = 'var(--error-color)';
@@ -344,40 +307,33 @@
 
             const tolerado = parseFloat(document.getElementById('tolerado').value);
             const descarteTotal = parseFloat(document.getElementById('descarteTotal').value);
-
             if (descarteTotal < tolerado) {
-                document.getElementById('descarteTotal-error').textContent = 
-                    'El descarte total no puede ser menor que el tolerado';
+                document.getElementById('descarteTotal-error').textContent = 'El descarte total no puede ser menor que el tolerado';
                 document.getElementById('descarteTotal').style.borderColor = 'var(--error-color)';
                 isValid = false;
             }
-
             return isValid;
         }
 
         document.getElementById('productoForm').addEventListener('submit', async function(event) {
             event.preventDefault();
-            
             if (!validateForm()) {
                 showToast('Por favor, corrija los errores en el formulario', true);
                 return;
             }
-
-            const submitButton = this.querySelector('button[type="submit"]');
-            submitButton.classList.add('loading');
-            submitButton.textContent = 'Procesando...';
-
+            const submissionButton = this.querySelector('button[type="submit"]');
+            submissionButton.classList.add('loading');
+            submissionButton.textContent = 'Procesando...';
             const formData = {
                 fecha: document.getElementById('fecha').value,
                 turno: document.getElementById('turno').value,
-                codigoProducto: document.getElementById('codigoProducto').value,
+                codigoProducto: "PROD-001", // Valor predeterminado o manual
                 numeroOrden: document.getElementById('numeroOrden').value,
                 tolerado: document.getElementById('tolerado').value,
                 descarteTotal: document.getElementById('descarteTotal').value,
                 observacion: document.getElementById('observacion').value,
                 vistoBueno: document.getElementById('vistoBueno').value
             };
-
             try {
                 const response = await fetch('https://script.google.com/macros/s/AKfycbwFHNF9TSzs473b0M1j5iLgMtpueap9_rADZB3IaKRBi75ubwNz0G2hDDR3fmnzPnpC6w/exec', {
                     method: 'POST',
@@ -388,20 +344,17 @@
                     },
                     body: JSON.stringify(formData)
                 });
-
                 showToast('¡Registro guardado exitosamente!');
                 document.getElementById('productoForm').reset();
-                
             } catch (error) {
                 showToast('Error al enviar los datos: ' + error.message, true);
                 console.error('Error:', error);
             } finally {
-                submitButton.classList.remove('loading');
-                submitButton.textContent = 'Registrar Descarte';
+                submissionButton.classList.remove('loading');
+                submissionButton.textContent = 'Registrar Descarte';
             }
         });
 
-        // Mejora de la experiencia de usuario con validación en tiempo real
         document.querySelectorAll('input, select').forEach(element => {
             element.addEventListener('input', function() {
                 const errorElement = document.getElementById(`${this.id}-error`);
